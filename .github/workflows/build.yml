@@ -9,6 +9,9 @@ on:
       commit-tag:
         required: false
         type: string
+      image-base:
+        required: true
+        type: string  
     secrets:
       DOCKER_USERNAME:
         required: true
@@ -46,7 +49,7 @@ jobs:
         run: mvn compile jib:dockerBuild -Dimage=${IMAGE_BASE}:${{ inputs.commit-tag || github.sha }}
 
       - name: Tag image as latest
-        run: docker tag ${IMAGE_BASE}:${COMMIT_TAG} ${IMAGE_BASE}:${LATEST_TAG}
+        run: docker tag ${IMAGE_BASE}:${{ inputs.commit-tag || github.sha }} ${IMAGE_BASE}:${LATEST_TAG}
 
       - name: Push Docker image (commit hash + latest)
         run: |
